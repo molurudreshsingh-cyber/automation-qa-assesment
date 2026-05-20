@@ -1,0 +1,162 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1120,
+        112
+      ],
+      "id": "bedc63ea-e0a9-4659-ad8d-f15f9e4cfaa0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/search/repositories",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -896,
+        112
+      ],
+      "id": "48a1c241-1f83-4140-ad88-82eb5d1f37cc",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (items[0]?.json?.items) {\n  return items[0].json.items.slice(0, 5).map(repo => ({ json: repo }));\n}\nreturn [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        112
+      ],
+      "id": "f12893d3-a358-488d-8080-1a0638e53cea",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -464,
+        112
+      ],
+      "id": "5b555d61-cbe9-4713-9b1a-9ccfefc8039a",
+      "name": "HTTP Request1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1,
+            "type": "mix"
+          },
+          "conditions": [
+            {
+              "id": "star_threshold",
+              "leftValue": "={{ $json.stargazers_count }}",
+              "rightValue": 5000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        112
+      ],
+      "id": "fac0cd4e-82ec-465d-a22d-65ba697b0bab",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": \"🔥 **High-Priority Repo Digest** 🔥\\n• **Name:** {{ $json.name }}\\n• **Stars:** ⭐ {{ $json.stargazers_count }}\\n• **Description:** {{ $json.description }}\\n• **URL:** {{ $json.html_url }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "92d37a1f-d2e3-41c9-8237-20d7972b9ef6",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": \"📈 **Standard Repo Update**\\n• **Name:** {{ $json.name }}\\n• **Stars:** ⭐ {{ $json.stargazers_count }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        224
+      ],
+      "id": "3f6779cc-3fe2-4dd2-945d-c795882060ac",
+      "name": "HTTP Request3"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5dda7eef-66d8-4a2e-84ae-782b59ac4ac0",
+  "meta": {
+    "instanceId": "fc6a334ddc8a2e0362700395ed501861f40488f6b974861468c7aa71a1a7b2c0"
+  },
+  "id": "cZld00AUuXTJHQvv",
+  "tags": []
+}
