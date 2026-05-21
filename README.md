@@ -24,3 +24,10 @@ Conducted boundary and exploratory validation against the hosted web ecosystem a
 * **Defect Behavior:** When an authenticated API operation encounters a system fault, the frontend leaks the user's active JSON Web Token (JWT) credentials in plaintext straight into the developer tools web log.
 * **Underlying Trigger:** A production build contains an unhandled `console.log(error)` catch block within the central API client interceptor code instead of filtering server details out before publication.
 * **Remediation Action:** Clean out development logging streams and wrap global client handlers in an environment conditional rule (`if (process.env.NODE_ENV === 'development')`) to isolate cryptographic tokens inside protected application memory.
+* ---
+### 🛠️ Project Assets
+* **Workflow JSON:** [Task 2 Automation](Task2_Workflow_Kanishk.json)
+* **Execution Proof:** ![Execution Success](Screenshot-2026-05-20-194554.png)
+
+### 🎥 Project Walkthrough
+[Watch my project walkthrough video here](https://www.loom.com/share/ec1cce6807c140368345a9c8a2ca02d0)
